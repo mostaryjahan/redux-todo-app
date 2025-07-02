@@ -33,16 +33,16 @@ const TaskCard = ({ task }: IProps) => {
         </span>
       </div>
       <h1  className="text-2xl font-bold mb-2 text-zinc-800 dark:text-zinc-100 ">
-        {task.title}
+        Task: {task.title}
       </h1>
       <p className="text-zinc-600 dark:text-zinc-300 mb-2">
-        {task.description}
+       Description: {task.description}
       </p>
+      <h2 className="text-zinc-600 dark:text-zinc-300 mb-2">Assign To: {task.assignTo}</h2>
       <div className="flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400 mb-4">
         <span>
           Due Date: <span className="font-medium">{task.dueDate}</span>
         </span>
-        <span></span>
       </div>
       <div className="flex items-center justify-end gap-2">
         <Button

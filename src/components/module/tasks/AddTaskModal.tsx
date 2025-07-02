@@ -30,27 +30,41 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { useCreateTasksMutation } from "@/redux/api/baseApi";
 import { addTask } from "@/redux/features/counter/taskSlice";
-import { useAppDispatch } from "@/redux/hook";
+import { selectUser } from "@/redux/features/user/userSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import type { ITask } from "@/types";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
 import { useForm, type SubmitHandler, type FieldValues } from "react-hook-form";
 
 export function AddTaskModal() {
+  const [open, setOpen] = useState(false);
   const form = useForm();
   const dispatch = useAppDispatch();
+  const users = useAppSelector(selectUser);
+
+  // rtk query
+  const [createTask, {data, isLoading, isError}] = useCreateTasksMutation();
+
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const formattedData = {
-    ...data,
-    dueDate: data.dueDate instanceof Date ? data.dueDate.toISOString().slice(0, 10) : data.dueDate,
-  };
-  dispatch(addTask(formattedData as ITask));
+      ...data,
+      dueDate:
+        data.dueDate instanceof Date
+          ? data.dueDate.toISOString().slice(0, 10)
+          : data.dueDate,
+    };
+    dispatch(addTask(formattedData as ITask));
+    setOpen(false);
+    form.reset();
   };
 
   return (
-    <Dialog>
+    <Dialog open ={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="flex justify-center mx-auto mt-4" variant="outline">
           Add Task
@@ -106,6 +120,31 @@ export function AddTaskModal() {
                       <SelectItem value="low">Low</SelectItem>
                       <SelectItem value="medium">Medium</SelectItem>
                       <SelectItem value="high">High</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="assignTo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>assignTo:</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl className="w-full">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a user" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {users.map((user) => (
+                        <SelectItem key={user.id} value={user.id}>{(user.name)}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormItem>

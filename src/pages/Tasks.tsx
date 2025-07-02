@@ -1,6 +1,7 @@
 import { AddTaskModal } from "@/components/module/tasks/AddTaskModal";
 import TaskCard from "@/components/module/tasks/TaskCard";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+ import { useGetTasksQuery } from "@/redux/api/baseApi";
 import { selectTasks, updateFilter } from "@/redux/features/counter/taskSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 
@@ -9,6 +10,8 @@ const Task = () => {
   const dispatch = useAppDispatch();
 
   console.log(tasks);
+  // rtk query
+   const {data, isLoading, isError} = useGetTasksQuery(undefined);
 
   return (
     <div className="mx-auto max-w-7xl px-5 mt-20">
@@ -21,18 +24,7 @@ const Task = () => {
           <TabsTrigger onClick={() => dispatch(updateFilter("medium"))} value="medium">Medium</TabsTrigger>
           <TabsTrigger onClick={() => dispatch(updateFilter("high"))} value="high">High</TabsTrigger>
         </TabsList>
-        <TabsContent value="all">
-        
-        </TabsContent>
-        <TabsContent value="low">
-         
-        </TabsContent>
-          <TabsContent value="medium">
-        
-        </TabsContent>
-          <TabsContent value="high">
-        
-        </TabsContent>
+       
       </Tabs>
         <AddTaskModal/>
       </div>
